@@ -1,0 +1,26 @@
+1. Mastering set node
+1.1 Assign manual value or create a static value
+1.2 Use multiple data type string, integer, array, Boolean and Object
+1.3 Use Ignore type conversation error for strict valid for fields
+1.4 Settings:
+1.4.1 Always output data: pass input as output without throw errors to the flow.
+1.4.2 On error: Continue -> will continue without stop
+1.4.3 Stop workflow -> Stop the running workflow
+
+2. File operation nodes:
+2.1 Binary data (010101)
+2.2 CSV/XLSX File
+2.3 JSON File
+2.4 text file (read/write)
+2.5 Convert to text
+2.5.1 convert to multiple actions like CSV, HTML, ICS, JSON, ODS, RTF, Text file, XLS, XLSX, base 64 string to file
+2.5.2 Data comes from previous node to convert to file output
+2.6 Extract from file
+2.6.1 Extract from CSV, HTML, ICS, JSON, ODS, RTF, PDF, text file, XML, XLS, XLSX, base64 string
+
+3. Mastering conditional logic Nodes:
+3.1 If node (true/false)
+3.2 Switch node
+
+4. What is JSON:
+4.1 Json contains array form which could be simple or nested object.

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1220"/>
+<title>n8n Node Mastery – Flow Diagram</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6fa;min-width:1220px;padding:20px;}
+h1{font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:4px;}
+.subtitle{font-size:12px;color:#666;margin-bottom:18px;}
+
+/* Marching arrows keyframes */
+@keyframes march-grn  {to{stroke-dashoffset:-18;}}
+@keyframes march-pur  {to{stroke-dashoffset:-18;}}
+@keyframes march-amb  {to{stroke-dashoffset:-18;}}
+@keyframes march-red  {to{stroke-dashoffset:-18;}}
+@keyframes march-blu  {to{stroke-dashoffset:-18;}}
+@keyframes march-teal {to{stroke-dashoffset:-18;}}
+@keyframes march-gray {to{stroke-dashoffset:-18;}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 rgba(92,53,201,0.35);}50%{box-shadow:0 0 0 8px rgba(92,53,201,0);}}
+@keyframes pulse-grn{0%,100%{box-shadow:0 0 0 0 rgba(13,122,85,0.4);}50%{box-shadow:0 0 0 8px rgba(13,122,85,0);}}
+
+/* Row layout */
+.page{max-width:1180px;margin:0 auto;}
+.row{display:flex;gap:12px;margin-bottom:16px;align-items:stretch;}
+.row-label{font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);min-width:18px;display:flex;align-items:center;justify-content:center;letter-spacing:1px;}
+.cards{display:flex;gap:12px;flex:1;align-items:stretch;}
+
+/* Card */
+.card{border-radius:12px;border:1.5px solid #e5e7eb;box-shadow:0 2px 8px rgba(0,0,0,0.06);background:#fff;flex:1;min-width:200px;overflow:hidden;animation:fadeUp 0.6s ease both;}
+.card-header{padding:8px 10px;display:flex;align-items:center;gap:6px;}
+.card-header .icon{font-size:16px;}
+.card-header .title{font-size:12px;font-weight:700;color:#fff;flex:1;}
+.card-header .badge{font-size:8px;background:rgba(255,255,255,0.22);color:#fff;border-radius:20px;padding:2px 7px;white-space:nowrap;}
+.card-body{padding:8px 10px 10px;}
+.use-case{font-size:10px;color:#888;font-style:italic;margin-bottom:8px;}
+
+/* Nodes row inside card */
+.nodes{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.node{border-radius:8px;padding:5px 8px;min-width:62px;display:flex;flex-direction:column;align-items:center;gap:1px;}
+.node .n-icon{font-size:15px;}
+.node .n-label{font-size:9px;font-weight:700;text-align:center;line-height:1.2;}
+.node .n-sub{font-size:8px;color:#888;text-align:center;line-height:1.2;}
+
+/* Arrow SVG */
+.arrow-wrap{display:flex;align-items:center;flex-shrink:0;}
+.arrow-wrap svg{overflow:visible;}
+
+/* Decision branch */
+.branch{display:flex;flex-direction:column;gap:4px;}
+.branch-row{display:flex;align-items:center;gap:5px;}
+.pill{font-size:8px;border-radius:20px;padding:2px 6px;font-weight:700;}
+.pill-grn{background:#d1fae5;color:#065f46;}
+.pill-red{background:#fee2e2;color:#991b1b;}
+.pill-blu{background:#dbeafe;color:#1e40af;}
+.pill-amb{background:#fef3c7;color:#92400e;}
+
+/* Loop box */
+.loop-box{border-radius:8px;border:1.5px dashed #888;padding:5px 8px;margin-top:6px;}
+.loop-title{font-size:8px;font-weight:700;color:#888;text-align:center;margin-bottom:4px;}
+
+/* Vertical mini-flow */
+.v-flow{display:flex;flex-direction:column;gap:3px;align-items:center;}
+
+/* Summary bar */
+.summary{border-radius:10px;padding:10px 18px;background:linear-gradient(135deg,#1a1a2e,#16213e);margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;}
+.sum-item{display:flex;align-items:center;gap:5px;font-size:9px;color:rgba(255,255,255,0.8);}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* Footer */
+.footer{text-align:center;font-size:9px;color:#aaa;margin-top:10px;}
+
+/* Card color schemes */
+.c-grn .card-header{background:#0d7a55;}
+.c-grn .node{background:#d1fae5;}
+.c-grn .n-label{color:#065f46;}
+
+.c-pur .card-header{background:#5c35c9;}
+.c-pur .node{background:#ede9fe;}
+.c-pur .n-label{color:#3730a3;}
+
+.c-amb .card-header{background:#b06000;}
+.c-amb .node{background:#fef3c7;}
+.c-amb .n-label{color:#92400e;}
+
+.c-red .card-header{background:#c0392b;}
+.c-red .node{background:#fee2e2;}
+.c-red .n-label{color:#991b1b;}
+
+.c-blu .card-header{background:#1a6db5;}
+.c-blu .node{background:#dbeafe;}
+.c-blu .n-label{color:#1e40af;}
+
+.c-teal .card-header{background:#0a7b7b;}
+.c-teal .node{background:#ccfbf1;}
+.c-teal .n-label{color:#134e4a;}
+
+/* Stagger */
+.card:nth-child(1){animation-delay:0.05s;}
+.card:nth-child(2){animation-delay:0.15s;}
+.card:nth-child(3){animation-delay:0.25s;}
+.card:nth-child(4){animation-delay:0.35s;}
+.card:nth-child(5){animation-delay:0.45s;}
+
+.pulse-node{animation:pulse-glow 2s ease-in-out infinite;}
+.pulse-grn-node{animation:pulse-grn 2s ease-in-out infinite;}
+
+/* Section divider */
+.section-title{font-size:11px;font-weight:800;color:#1a1a2e;margin:6px 0 6px 22px;text-transform:uppercase;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>⚡ n8n Node Mastery – Complete Flow Diagram</h1>
+<p class="subtitle">Set Node · File Operations · Conditional Logic · JSON Fundamentals</p>
+
+<!-- ═══════════════════════ ROW 1 — SET NODE ═══════════════════════ -->
+<div class="section-title">① Set Node</div>
+<div class="row">
+  <div class="row-label">SET NODE</div>
+  <div class="cards">
+
+    <!-- Card 1: Static Values -->
+    <div class="card c-grn" style="animation-delay:0.05s">
+      <div class="card-header"><span class="icon">📝</span><span class="title">Assign Static Values</span><span class="badge">Manual</span></div>
+      <div class="card-body">
+        <div class="use-case">Hardcode constants, labels or defaults into workflow data</div>
+        <div class="nodes">
+          <div class="node pulse-grn-node">
+            <span class="n-icon">🔢</span>
+            <span class="n-label">String</span>
+            <span class="n-sub">"Hello"</span>
+          </div>
+          <!-- arrow -->
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">🔢</span>
+            <span class="n-label">Integer</span>
+            <span class="n-sub">42</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.0s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">☑️</span>
+            <span class="n-label">Boolean</span>
+            <span class="n-sub">true/false</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.1s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">Array</span>
+            <span class="n-sub">[a,b,c]</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.3s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">🗂️</span>
+            <span class="n-label">Object</span>
+            <span class="n-sub">{key:val}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Type Conversion -->
+    <div class="card c-pur" style="animation-delay:0.15s">
+      <div class="card-header"><span class="icon">🔄</span><span class="title">Type Conversion & Errors</span><span class="badge">Strict / Lenient</span></div>
+      <div class="card-body">
+        <div class="use-case">Control how the node handles incompatible data types</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📥</span>
+            <span class="n-label">Input Data</span>
+            <span class="n-sub">any type</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="v-flow">
+            <div class="node pulse-node" style="border:1.5px solid #5c35c9;">
+              <span class="n-icon">⚙️</span>
+              <span class="n-label">Ignore Conv.</span>
+              <span class="n-sub">Error OFF</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 1.1s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="branch">
+            <div class="branch-row"><span class="pill pill-grn">✓ Valid</span><div class="node"><span class="n-icon">✅</span><span class="n-label">Converted</span></div></div>
+            <div class="branch-row"><span class="pill pill-amb">⚠ Skip</span><div class="node"><span class="n-icon">⏭️</span><span class="n-label">Pass-thru</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Settings -->
+    <div class="card c-amb" style="animation-delay:0.25s">
+      <div class="card-header"><span class="icon">⚙️</span><span class="title">Node Settings</span><span class="badge">Error Handling</span></div>
+      <div class="card-body">
+        <div class="use-case">Control what happens when errors occur inside the Set Node</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📤</span>
+            <span class="n-label">Always Output</span>
+            <span class="n-sub">Pass input on err</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#b06000" stroke-width="2" stroke-dasharray="5 3" style="animation:march-amb 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#b06000"/></svg></div>
+          <div class="branch">
+            <div class="branch-row"><span class="pill pill-blu">▶ Continue</span><div class="node"><span class="n-icon">➡️</span><span class="n-label">Next Node</span><span class="n-sub">no stop</span></div></div>
+            <div class="branch-row"><span class="pill pill-red">🛑 Stop</span><div class="node"><span class="n-icon">⛔</span><span class="n-label">Halt Flow</span><span class="n-sub">full stop</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════ ROW 2 — FILE OPERATIONS ═══════════════════════ -->
+<div class="section-title">② File Operation Nodes</div>
+<div class="row">
+  <div class="row-label">FILE OPS</div>
+  <div class="cards">
+
+    <!-- Card 4: Binary Data -->
+    <div class="card c-red" style="animation-delay:0.05s">
+      <div class="card-header"><span class="icon">💾</span><span class="title">Binary Data</span><span class="badge">010101</span></div>
+      <div class="card-body">
+        <div class="use-case">Raw file content — images, PDFs, audio, video streams</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📁</span>
+            <span class="n-label">File Input</span>
+            <span class="n-sub">any format</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.0s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#c0392b"/></svg></div>
+          <div class="node">
+            <span class="n-icon">🔢</span>
+            <span class="n-label">Binary</span>
+            <span class="n-sub">010101</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.3s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#c0392b"/></svg></div>
+          <div class="node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">n8n Item</span>
+            <span class="n-sub">binary key</span>
+          </div>
+        </div>
+        <div class="loop-box" style="border-color:#c0392b;margin-top:6px;">
+          <div class="loop-title">mimeType · fileName · base64</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Spreadsheets -->
+    <div class="card c-blu" style="animation-delay:0.15s">
+      <div class="card-header"><span class="icon">📊</span><span class="title">CSV / XLSX Files</span><span class="badge">Spreadsheet</span></div>
+      <div class="card-body">
+        <div class="use-case">Parse spreadsheet rows into items or write items to file</div>
+        <div class="nodes">
+          <div class="v-flow">
+            <div class="node">
+              <span class="n-icon">📄</span>
+              <span class="n-label">CSV File</span>
+            </div>
+            <div class="node">
+              <span class="n-icon">📗</span>
+              <span class="n-label">XLSX File</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="28"><line x1="0" y1="14" x2="18" y2="14" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.1s linear infinite"/><polygon points="18,11 22,14 18,17" fill="#1a6db5"/></svg></div>
+          <div class="node">
+            <span class="n-icon">⚙️</span>
+            <span class="n-label">Read/Write</span>
+            <span class="n-sub">sheet name</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#1a6db5"/></svg></div>
+          <div class="node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">n8n Items</span>
+            <span class="n-sub">1 row = 1 item</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: JSON/Text -->
+    <div class="card c-grn" style="animation-delay:0.25s">
+      <div class="card-header"><span class="icon">📝</span><span class="title">JSON & Text Files</span><span class="badge">Read/Write</span></div>
+      <div class="card-body">
+        <div class="use-case">Read structured JSON or plain text to/from filesystem</div>
+        <div class="nodes">
+          <div class="v-flow">
+            <div class="node">
+              <span class="n-icon">🗂️</span>
+              <span class="n-label">JSON File</span>
+            </div>
+            <div class="node">
+              <span class="n-icon">📃</span>
+              <span class="n-label">Text File</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="28"><line x1="0" y1="14" x2="18" y2="14" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.0s linear infinite"/><polygon points="18,11 22,14 18,17" fill="#0d7a55"/></svg></div>
+          <div class="v-flow">
+            <div class="node" style="background:#d1fae5;">
+              <span class="n-icon">📥</span>
+              <span class="n-label n-label" style="color:#065f46;">Read</span>
+            </div>
+            <div class="node" style="background:#d1fae5;">
+              <span class="n-icon">📤</span>
+              <span class="n-label" style="color:#065f46;">Write</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="28"><line x1="0" y1="14" x2="18" y2="14" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.3s linear infinite"/><polygon points="18,11 22,14 18,17" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">🔄</span>
+            <span class="n-label">Items / Binary</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7: Convert to File -->
+    <div class="card c-pur" style="animation-delay:0.35s">
+      <div class="card-header"><span class="icon">🔁</span><span class="title">Convert to File</span><span class="badge">9 Formats</span></div>
+      <div class="card-body">
+        <div class="use-case">Previous node data → downloadable file output</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">Input Items</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="v-flow">
+            <div style="display:flex;gap:3px;flex-wrap:wrap;max-width:130px;">
+              <span class="pill pill-blu">CSV</span>
+              <span class="pill pill-grn">XLSX</span>
+              <span class="pill pill-amb">JSON</span>
+              <span class="pill pill-red">PDF</span>
+              <span class="pill pill-blu">HTML</span>
+              <span class="pill pill-grn">RTF</span>
+              <span class="pill pill-amb">ICS</span>
+              <span class="pill pill-red">ODS</span>
+              <span class="pill pill-blu">Base64</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 1.1s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="node">
+            <span class="n-icon">📄</span>
+            <span class="n-label">File Binary</span>
+            <span class="n-sub">output</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 8: Extract from File -->
+    <div class="card c-amb" style="animation-delay:0.45s">
+      <div class="card-header"><span class="icon">🔍</span><span class="title">Extract from File</span><span class="badge">12 Formats</span></div>
+      <div class="card-body">
+        <div class="use-case">Pull structured data out of binary files into workflow items</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📁</span>
+            <span class="n-label">Binary File</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#b06000" stroke-width="2" stroke-dasharray="5 3" style="animation:march-amb 1.0s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#b06000"/></svg></div>
+          <div class="v-flow">
+            <div style="display:flex;gap:3px;flex-wrap:wrap;max-width:130px;">
+              <span class="pill pill-amb">CSV</span>
+              <span class="pill pill-blu">XLSX</span>
+              <span class="pill pill-grn">JSON</span>
+              <span class="pill pill-red">PDF</span>
+              <span class="pill pill-amb">XML</span>
+              <span class="pill pill-blu">HTML</span>
+              <span class="pill pill-grn">ICS</span>
+              <span class="pill pill-red">RTF</span>
+              <span class="pill pill-amb">ODS</span>
+              <span class="pill pill-blu">XLS</span>
+              <span class="pill pill-grn">Text</span>
+              <span class="pill pill-red">Base64</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#b06000" stroke-width="2" stroke-dasharray="5 3" style="animation:march-amb 1.3s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#b06000"/></svg></div>
+          <div class="node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">n8n Items</span>
+            <span class="n-sub">structured</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════ ROW 3 — CONDITIONAL LOGIC ═══════════════════════ -->
+<div class="section-title">③ Conditional Logic Nodes</div>
+<div class="row">
+  <div class="row-label">LOGIC</div>
+  <div class="cards">
+
+    <!-- Card 9: If Node -->
+    <div class="card c-red" style="animation-delay:0.05s">
+      <div class="card-header"><span class="icon">🔀</span><span class="title">If Node</span><span class="badge">TRUE / FALSE</span></div>
+      <div class="card-body">
+        <div class="use-case">Evaluate one condition and route items to two branches</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📥</span>
+            <span class="n-label">Input Item</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#c0392b"/></svg></div>
+          <div class="node" style="background:#fee2e2;border:1.5px solid #c0392b;">
+            <span class="n-icon">❓</span>
+            <span class="n-label" style="color:#991b1b;">Condition</span>
+            <span class="n-sub">age &gt; 18?</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="60">
+            <line x1="0" y1="30" x2="10" y2="30" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.0s linear infinite"/>
+            <line x1="10" y1="30" x2="10" y2="10" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.0s linear infinite"/>
+            <line x1="10" y1="30" x2="10" y2="50" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.1s linear infinite"/>
+            <line x1="10" y1="10" x2="18" y2="10" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.0s linear infinite"/>
+            <line x1="10" y1="50" x2="18" y2="50" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-red 1.1s linear infinite"/>
+            <polygon points="18,7 22,10 18,13" fill="#c0392b"/>
+            <polygon points="18,47 22,50 18,53" fill="#c0392b"/>
+          </svg></div>
+          <div class="branch">
+            <div class="branch-row"><div class="node" style="background:#d1fae5;"><span class="n-icon">✅</span><span class="n-label" style="color:#065f46;">TRUE</span><span class="n-sub">Adult Flow</span></div></div>
+            <div class="branch-row"><div class="node" style="background:#fee2e2;"><span class="n-icon">❌</span><span class="n-label" style="color:#991b1b;">FALSE</span><span class="n-sub">Minor Flow</span></div></div>
+          </div>
+        </div>
+        <div class="loop-box" style="border-color:#c0392b;margin-top:6px;">
+          <div class="loop-title">String · Number · Boolean · DateTime · Array</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 10: Switch Node -->
+    <div class="card c-blu" style="animation-delay:0.15s">
+      <div class="card-header"><span class="icon">🔃</span><span class="title">Switch Node</span><span class="badge">Multi-Route</span></div>
+      <div class="card-body">
+        <div class="use-case">Route items to one of N outputs based on a field value</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📥</span>
+            <span class="n-label">Input Item</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#1a6db5"/></svg></div>
+          <div class="node" style="background:#dbeafe;border:1.5px solid #1a6db5;">
+            <span class="n-icon">🔃</span>
+            <span class="n-label" style="color:#1e40af;">Switch</span>
+            <span class="n-sub">status = ?</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="80">
+            <line x1="0" y1="40" x2="10" y2="40" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.0s linear infinite"/>
+            <line x1="10" y1="40" x2="10" y2="10" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.0s linear infinite"/>
+            <line x1="10" y1="10" x2="10" y2="70" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.0s linear infinite"/>
+            <line x1="10" y1="10" x2="18" y2="10" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.0s linear infinite"/>
+            <line x1="10" y1="40" x2="18" y2="40" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.1s linear infinite"/>
+            <line x1="10" y1="70" x2="18" y2="70" stroke="#1a6db5" stroke-width="2" stroke-dasharray="5 3" style="animation:march-blu 1.3s linear infinite"/>
+            <polygon points="18,7 22,10 18,13" fill="#1a6db5"/>
+            <polygon points="18,37 22,40 18,43" fill="#1a6db5"/>
+            <polygon points="18,67 22,70 18,73" fill="#1a6db5"/>
+          </svg></div>
+          <div class="branch">
+            <div class="branch-row"><span class="pill pill-grn">pending</span><div class="node"><span class="n-icon">📢</span><span class="n-label" style="color:#065f46;">Notify</span></div></div>
+            <div class="branch-row"><span class="pill pill-blu">approved</span><div class="node"><span class="n-icon">✅</span><span class="n-label" style="color:#1e40af;">Action</span></div></div>
+            <div class="branch-row"><span class="pill pill-red">rejected</span><div class="node"><span class="n-icon">❌</span><span class="n-label" style="color:#991b1b;">Reject</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 11: If vs Switch -->
+    <div class="card c-teal" style="animation-delay:0.25s">
+      <div class="card-header"><span class="icon">⚖️</span><span class="title">If vs Switch — When to Use</span><span class="badge">Decision Guide</span></div>
+      <div class="card-body">
+        <div class="use-case">Pick the right conditional node for your routing logic</div>
+        <div class="nodes">
+          <div class="v-flow" style="gap:6px;">
+            <div style="display:flex;align-items:center;gap:5px;">
+              <div class="node" style="background:#ccfbf1;border:1px solid #0a7b7b;">
+                <span class="n-icon">🔀</span>
+                <span class="n-label" style="color:#134e4a;">If Node</span>
+                <span class="n-sub">2 outputs</span>
+              </div>
+              <div style="font-size:9px;color:#134e4a;max-width:120px;line-height:1.3;">Binary decision<br/>True / False only</div>
+            </div>
+            <div style="border-top:1px dashed #0a7b7b;width:100%;"></div>
+            <div style="display:flex;align-items:center;gap:5px;">
+              <div class="node" style="background:#ccfbf1;border:1px solid #0a7b7b;">
+                <span class="n-icon">🔃</span>
+                <span class="n-label" style="color:#134e4a;">Switch</span>
+                <span class="n-sub">N outputs</span>
+              </div>
+              <div style="font-size:9px;color:#134e4a;max-width:120px;line-height:1.3;">3+ paths on<br/>one field value</div>
+            </div>
+          </div>
+        </div>
+        <div class="loop-box" style="border-color:#0a7b7b;margin-top:6px;">
+          <div class="loop-title">Fallback Output catches unmatched cases</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════ ROW 4 — JSON ═══════════════════════ -->
+<div class="section-title">④ JSON Fundamentals</div>
+<div class="row">
+  <div class="row-label">JSON</div>
+  <div class="cards">
+
+    <!-- Card 12: Simple JSON -->
+    <div class="card c-grn" style="animation-delay:0.05s">
+      <div class="card-header"><span class="icon">🗂️</span><span class="title">Simple JSON Object</span><span class="badge">Flat</span></div>
+      <div class="card-body">
+        <div class="use-case">Key-value pairs at one level — most common n8n item shape</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">🔑</span>
+            <span class="n-label">String</span>
+            <span class="n-sub">"name":"Alice"</span>
+          </div>
+          <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.0s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">🔢</span>
+            <span class="n-label">Integer</span>
+            <span class="n-sub">"age":30</span>
+          </div>
+          <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.1s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0d7a55"/></svg></div>
+          <div class="node">
+            <span class="n-icon">☑️</span>
+            <span class="n-label">Boolean</span>
+            <span class="n-sub">"active":true</span>
+          </div>
+          <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0d7a55" stroke-width="2" stroke-dasharray="5 3" style="animation:march-grn 1.3s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0d7a55"/></svg></div>
+          <div class="node pulse-grn-node">
+            <span class="n-icon">📦</span>
+            <span class="n-label">n8n Item</span>
+            <span class="n-sub">$json.name</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 13: Array JSON -->
+    <div class="card c-pur" style="animation-delay:0.15s">
+      <div class="card-header"><span class="icon">📚</span><span class="title">JSON Array</span><span class="badge">Multi-Item</span></div>
+      <div class="card-body">
+        <div class="use-case">Each array element becomes a separate n8n item automatically</div>
+        <div class="nodes">
+          <div class="node">
+            <span class="n-icon">📋</span>
+            <span class="n-label">JSON Array</span>
+            <span class="n-sub">[ {}, {}, {} ]</span>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 0.9s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="v-flow">
+            <div class="node"><span class="n-icon">1️⃣</span><span class="n-label">Item 1</span></div>
+            <div class="node"><span class="n-icon">2️⃣</span><span class="n-label">Item 2</span></div>
+            <div class="node"><span class="n-icon">3️⃣</span><span class="n-label">Item 3</span></div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#5c35c9" stroke-width="2" stroke-dasharray="5 3" style="animation:march-pur 1.1s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#5c35c9"/></svg></div>
+          <div class="node pulse-node">
+            <span class="n-icon">🔄</span>
+            <span class="n-label">n8n Items</span>
+            <span class="n-sub">split auto</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 14: Nested JSON -->
+    <div class="card c-amb" style="animation-delay:0.25s">
+      <div class="card-header"><span class="icon">🪆</span><span class="title">Nested JSON Object</span><span class="badge">Deep</span></div>
+      <div class="card-body">
+        <div class="use-case">Objects within objects — access deep fields using dot notation</div>
+        <div class="nodes">
+          <div class="v-flow">
+            <div class="node">
+              <span class="n-icon">👤</span>
+              <span class="n-label">user{}</span>
+              <span class="n-sub">outer obj</span>
+            </div>
+            <div class="node" style="margin-left:14px;">
+              <span class="n-icon">🏠</span>
+              <span class="n-label">address{}</span>
+              <span class="n-sub">inner obj</span>
+            </div>
+            <div class="node" style="margin-left:28px;">
+              <span class="n-icon">🌆</span>
+              <span class="n-label">city</span>
+              <span class="n-sub">"Chennai"</span>
+            </div>
+          </div>
+          <div class="arrow-wrap"><svg width="22" height="14"><line x1="0" y1="7" x2="18" y2="7" stroke="#b06000" stroke-width="2" stroke-dasharray="5 3" style="animation:march-amb 1.1s linear infinite"/><polygon points="18,4 22,7 18,10" fill="#b06000"/></svg></div>
+          <div class="v-flow">
+            <div class="node">
+              <span class="n-icon">✏️</span>
+              <span class="n-label">Expression</span>
+              <span class="n-sub">$json.user.address.city</span>
+            </div>
+            <div class="node">
+              <span class="n-icon">📊</span>
+              <span class="n-label">orders[0].id</span>
+              <span class="n-sub">array access</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 15: n8n Expressions -->
+    <div class="card c-teal" style="animation-delay:0.35s">
+      <div class="card-header"><span class="icon">⚡</span><span class="title">n8n JSON Expressions</span><span class="badge">{{ }}</span></div>
+      <div class="card-body">
+        <div class="use-case">Access and transform JSON data in any node field using expressions</div>
+        <div class="nodes">
+          <div class="v-flow" style="gap:4px;width:100%;">
+            <div style="display:flex;align-items:center;gap:4px;width:100%;">
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">📝</span>
+                <span class="n-label" style="color:#134e4a;">$json.name</span>
+                <span class="n-sub">string field</span>
+              </div>
+              <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0a7b7b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-teal 0.9s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0a7b7b"/></svg></div>
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">📤</span>
+                <span class="n-label" style="color:#134e4a;">"Alice"</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;width:100%;">
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">📊</span>
+                <span class="n-label" style="color:#134e4a;">$json.orders[0].id</span>
+                <span class="n-sub">array index</span>
+              </div>
+              <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0a7b7b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-teal 1.1s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0a7b7b"/></svg></div>
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">📤</span>
+                <span class="n-label" style="color:#134e4a;">"ORD001"</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;width:100%;">
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">🔢</span>
+                <span class="n-label" style="color:#134e4a;">$json.orders.length</span>
+                <span class="n-sub">array count</span>
+              </div>
+              <div class="arrow-wrap"><svg width="16" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#0a7b7b" stroke-width="2" stroke-dasharray="5 3" style="animation:march-teal 1.3s linear infinite"/><polygon points="12,4 16,7 12,10" fill="#0a7b7b"/></svg></div>
+              <div class="node" style="background:#ccfbf1;flex:1;">
+                <span class="n-icon">📤</span>
+                <span class="n-label" style="color:#134e4a;">2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Summary Bar -->
+<div class="summary">
+  <div class="sum-item"><div class="dot" style="background:#0d7a55;"></div><span>Set Node: Assign static values across String, Integer, Boolean, Array, Object types with error control</span></div>
+  <div class="sum-item"><div class="dot" style="background:#c0392b;"></div><span>Binary Data: Raw file content (010101) — images, PDFs, audio stored in binary key</span></div>
+  <div class="sum-item"><div class="dot" style="background:#1a6db5;"></div><span>CSV/XLSX/JSON/Text: Read & write structured files — each row = one n8n item</span></div>
+  <div class="sum-item"><div class="dot" style="background:#5c35c9;"></div><span>Convert to File: 9 output formats (CSV, XLSX, JSON, PDF, HTML, RTF, ICS, ODS, Base64)</span></div>
+  <div class="sum-item"><div class="dot" style="background:#b06000;"></div><span>Extract from File: 12 input formats — parse any file into usable n8n items</span></div>
+  <div class="sum-item"><div class="dot" style="background:#c0392b;"></div><span>If Node: Binary TRUE/FALSE routing on one condition — supports 5 data types</span></div>
+  <div class="sum-item"><div class="dot" style="background:#1a6db5;"></div><span>Switch Node: Multi-path routing (N outputs) on one field value — use for 3+ branches</span></div>
+  <div class="sum-item"><div class="dot" style="background:#0a7b7b;"></div><span>JSON: Simple/Nested/Array — access via $json.field.nested[0].key in expressions</span></div>
+</div>
+
+<div class="footer" style="margin-top:8px;">
+  n8n · Set Node · Binary Data · CSV · XLSX · JSON · Text File · Convert to File · Extract from File · If Node · Switch Node · JSON Expressions · Workflow Automation
+</div>
+
+</div>
+</body>
+</html>
