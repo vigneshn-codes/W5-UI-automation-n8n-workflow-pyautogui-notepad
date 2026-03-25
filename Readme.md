@@ -1,4 +1,4 @@
-# 🔁 n8n Node Mastery Guide
+# 🔁 n8n UI automation RPA Mastery Guide
 
 > A comprehensive reference for mastering n8n's core nodes — Set Node, File Operations, Conditional Logic, and JSON fundamentals.
 
